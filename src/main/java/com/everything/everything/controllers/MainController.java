@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 public class MainController {
@@ -33,10 +33,12 @@ public class MainController {
 
     @GetMapping("/main")
     public String mainPage(@AuthenticationPrincipal Person person,
+                           @PageableDefault(size = 7,sort = {"creationDate"},direction = Sort.Direction.DESC) Pageable pageable,
                            Model model)
     {
-        List<Note> notes=noteService.getAllNotesFromChannels(person.getId());
-        model.addAttribute("notes",notes);
+        Page<Note> notes=noteService.getAllNotesFromChannels(person.getId(),pageable);
+
+        model.addAttribute("notes", notes.getContent());
         model.addAttribute("username",person.getUsername());
         return "main";
     }

@@ -66,9 +66,14 @@ public class NoteService {
 
 
 
-    public List<Note> getAllNotesFromChannels (Long id)
+    public Page<Note> getAllNotesFromChannels (Long id, Pageable pageable)
     {
-        Set<Person> people=personService.getUserById(id).getSubscriptions();
+        Person person=personService.getUserById(id);
+        Set<Person> people=person.getSubscriptions();
+        if(people.isEmpty())
+        {
+            return new PageImpl<Note>(new ArrayList<Note>(),pageable,0);
+        }
         List<String> usernames=new ArrayList<>();
         for(Person p:people)
         {
@@ -77,8 +82,8 @@ public class NoteService {
         List<Note> notes=entityManager.createQuery("select note from Note note where note.author in :paramList order by note.creationDate desc ",Note.class)
                 .setParameter("paramList",usernames).getResultList();
 
-
-        return notes;
+        Page<Note> page=new PageImpl<Note>(notes,pageable,notes.size());
+        return page;
     }
 
     public List<Note> getAllNotesOfThisUser(Person person)
