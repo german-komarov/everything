@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -169,8 +166,32 @@ public class PersonService implements UserDetailsService {
 
         return "OK";
 
+    }
 
 
+    public boolean subscribe(Person channel,Person subscriber)
+    {
+        Set<Person> subscribersOfTheChannel=channel.getSubscribers();
+        if(subscribersOfTheChannel.contains(subscriber)||channel.equals(subscriber))
+        {
+            return false;
+        }
+        subscribersOfTheChannel.add(subscriber);
+        channel.setSubscribers(subscribersOfTheChannel);
+        this.saveUser(channel);
+        return true;
+    }
 
+    public boolean unsubscribe(Person channel,Person subscriber)
+    {
+        Set<Person> subscribersOfTheChannel=channel.getSubscribers();
+        if(!subscribersOfTheChannel.contains(subscriber)||channel.equals(subscriber))
+        {
+            return false;
+        }
+        subscribersOfTheChannel.remove(subscriber);
+        channel.setSubscribers(subscribersOfTheChannel);
+        this.saveUser(channel);
+        return true;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = {"id","username","email","firstName","secondName"})
+@ToString(of = {"id","username","email","firstName","lastName"})
 @Table(name = "person")
 public class Person  implements UserDetails {
 
@@ -51,7 +51,7 @@ public class Person  implements UserDetails {
     private String activationCode;
     private int isActivated;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_subscriptions",
             joinColumns = {@JoinColumn(name="channel_id")},
@@ -59,7 +59,7 @@ public class Person  implements UserDetails {
     )
     private Set<Person> subscribers=new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="user_subscriptions",
             joinColumns = {@JoinColumn(name="subscriber_id")},

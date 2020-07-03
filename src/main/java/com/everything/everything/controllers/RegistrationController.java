@@ -17,7 +17,7 @@ public class RegistrationController {
     @Autowired
     private PersonService personService;
 
-    @GetMapping("/")
+    @GetMapping("/registration")
     public String getPage()
     {
         return "registration";
