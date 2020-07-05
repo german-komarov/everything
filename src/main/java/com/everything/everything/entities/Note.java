@@ -1,9 +1,12 @@
 package com.everything.everything.entities;
 
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,6 +20,7 @@ public class Note {
     private Long id;
 
     private String author;
+    private Long authorId;
 
     @Lob
     private String attachment;
@@ -27,12 +31,24 @@ public class Note {
 
     private Date creationDate;
 
+    @Transient
+    private boolean likedByThisUser;
+
+
 
     @PrePersist
     private void onCreate()
     {
         creationDate=new Date();
     }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="note_likes",
+            joinColumns = {@JoinColumn(name="note_id")},
+            inverseJoinColumns = {@JoinColumn(name = "person_id")}
+            )
+    private Set<Person> likes=new HashSet<>();
 
 
 

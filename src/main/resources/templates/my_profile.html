@@ -25,7 +25,7 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li><a href="/main">Home</a></li>
-                    <li><a href="/createNote">Create Post</a></li>
+                    <li><a href="/note/createNote">Create Post</a></li>
 
                 </ul>
                 <ul class="nav pull-right">
@@ -82,6 +82,34 @@
             <div class="col-md-4 col-xs-4 well" th:text="${person.subscribers.size()}"></div>
             <div class="col-md-4 col-xs-4 well" th:text="${person.subscriptions.size()}"></div>
         </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div th:each="note : ${notes}" class="main">
+        <h2 th:text="${note.author}"></h2>
+        <h5 th:text="${note.creationDate}"></h5>
+        <div align="center">
+            <pre th:text="${note.content}"></pre>
+            <br>
+            <div th:if="${note.attachmentType=='image'}">
+                <img  th:src="@{'data:image/jpeg;base64,'+${note.attachment}}" width="500" height="600" alt="image"/>
+            </div>
+            <div th:if="${note.attachmentType=='audio'}">
+                <audio controls>
+
+                    <source th:src="@{'data:audio/mpeg;base64,'+${note.attachment}}" type="audio/mpeg">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+            <div th:if="${note.attachmentType=='video'}">
+                <video width="640" height="360" controls>
+                    <source th:src="@{'data:video/mp4;base64,'+${note.attachment}}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <br>
     </div>
 </div>
 </body>

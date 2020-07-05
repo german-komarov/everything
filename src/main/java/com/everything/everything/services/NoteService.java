@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -30,24 +31,30 @@ public class NoteService {
     private NoteRepository noteRepository;
 
 
+
+
+
+    public void saveNote(Note note)
+    {
+        noteRepository.save(note);
+    }
+
+    public void deleteNoteById(Long id)
+    {
+        noteRepository.deleteById(id);
+    }
+
     public List<Note> getAllNotes()
     {
         return noteRepository.findAll();
     }
 
+
     public Note getNoteById(Long id)
     {
-        if(noteRepository.findById(id).isPresent())
-        {
-            return noteRepository.findById(id).get();
-        }
-
-        else
-        {
-            return null;
-        }
+        Optional<Note> note=noteRepository.findById(id);
+        return note.orElse(null);
     }
-
 
     public Note getNoteByAuthor(String author)
     {
@@ -66,13 +73,13 @@ public class NoteService {
 
 
 
-    public Page<Note> getAllNotesFromChannels (Long id, Pageable pageable)
+    public List<Note> getAllNotesFromChannels (Long id)
     {
         Person person=personService.getUserById(id);
         Set<Person> people=person.getSubscriptions();
         if(people.isEmpty())
         {
-            return new PageImpl<Note>(new ArrayList<Note>(),pageable,0);
+            return new ArrayList<Note>();
         }
         List<String> usernames=new ArrayList<>();
         for(Person p:people)
@@ -82,21 +89,48 @@ public class NoteService {
         List<Note> notes=entityManager.createQuery("select note from Note note where note.author in :paramList order by note.creationDate desc ",Note.class)
                 .setParameter("paramList",usernames).getResultList();
 
-        Page<Note> page=new PageImpl<Note>(notes,pageable,notes.size());
-        return page;
+        return notes;
     }
 
-    public List<Note> getAllNotesOfThisUser(Person person)
+    public List<Note> getAllNotesOfThisUser(Long id)
     {
-        return entityManager.createQuery("select note from Note note where note.author like :paramUsername",Note.class)
+        Person person=personService.getUserById(id);
+        return entityManager.createQuery("select note from Note note where note.author like :paramUsername order by note.creationDate desc ",Note.class)
                 .setParameter("paramUsername",person.getUsername())
                 .getResultList();
     }
 
 
-    public void saveNote(Note note)
+    public boolean likeNote(Long noteId,Long personId)
     {
-        noteRepository.save(note);
+        Note note=this.getNoteById(noteId);
+        Person person=personService.getUserById(personId);
+        Set<Person> likes=note.getLikes();
+        if(likes.contains(person))
+        {
+            return false;
+        }
+        likes.add(person);
+        note.setLikes(likes);
+        this.saveNote(note);
+        return true;
+
     }
 
+
+    public boolean unlikeNote(Long noteId,Long personId)
+    {
+        Note note=this.getNoteById(noteId);
+        Person person=personService.getUserById(personId);
+        Set<Person> likes=note.getLikes();
+        if(!likes.contains(person))
+        {
+            return false;
+        }
+        likes.remove(person);
+        note.setLikes(likes);
+        this.saveNote(note);
+        return true;
+
+    }
 }

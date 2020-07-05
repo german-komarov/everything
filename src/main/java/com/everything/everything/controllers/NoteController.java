@@ -3,13 +3,12 @@ package com.everything.everything.controllers;
 import com.everything.everything.entities.Note;
 import com.everything.everything.entities.Person;
 import com.everything.everything.services.NoteService;
+import com.everything.everything.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,10 +16,14 @@ import java.util.Base64;
 import java.util.Objects;
 
 @Controller
+@RequestMapping("/note")
 public class NoteController {
 
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private PersonService personService;
 
 
 
@@ -49,7 +52,32 @@ public class NoteController {
         }
 
         note.setAuthor(person.getUsername());
+        note.setAuthorId(person.getId());
         noteService.saveNote(note);
         return "redirect:/main";
     }
+
+    @GetMapping("/likeNote/{id}")
+    public String likeNoteInController(@AuthenticationPrincipal Person principal,@PathVariable Long id)
+    {
+        if(noteService.likeNote(id,principal.getId())) {
+            return "redirect:/main";
+        }
+
+        return "denied_page";
+    }
+
+    @GetMapping("/unlikeNote/{id}")
+    public String unlikeNoteInController(@AuthenticationPrincipal Person principal,@PathVariable Long id)
+    {
+        Person person=personService.getUserById(principal.getId());
+        if(noteService.unlikeNote(id,principal.getId())) {
+            return "redirect:/main";
+        }
+
+        return "denied_page";
+    }
+
+
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
+@RequestMapping("/profile")
 public class ProfileController {
     @Autowired
     private PersonService personService;
@@ -24,16 +25,18 @@ public class ProfileController {
     private NoteService noteService;
 
 
-    @GetMapping("/profile")
+    @GetMapping
     public String profileOfThePerson(@AuthenticationPrincipal Person principal, Model model)
     {
         Person person=personService.getUserById(principal.getId());
-        List<Note> noteList=noteService.getAllNotesOfThisUser(person);
-        model.addAttribute("numberOfNotes",noteList.size());
+        List<Note> notes=noteService.getAllNotesOfThisUser(person.getId());
+        model.addAttribute("numberOfNotes",notes.size());
         model.addAttribute("person",person);
         model.addAttribute("username",person.getUsername());
+        model.addAttribute("notes",notes);
         return "my_profile";
     }
+
 
 
 

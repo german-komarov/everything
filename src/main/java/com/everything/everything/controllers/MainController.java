@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -32,14 +33,22 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String mainPage(@AuthenticationPrincipal Person person,
-                           @PageableDefault(size = 7,sort = {"creationDate"},direction = Sort.Direction.DESC) Pageable pageable,
-                           Model model)
+    public String mainPage(@AuthenticationPrincipal Person principal, Model model)
     {
-        Page<Note> notes=noteService.getAllNotesFromChannels(person.getId(),pageable);
+        Person person=personService.getUserById(principal.getId());
+        List<Note> notes=noteService.getAllNotesFromChannels(person.getId());
+        for(Note note:notes)
+        {
+            if(note.getLikes().contains(person))
+            {
+                note.setLikedByThisUser(true);
+                notes.set(notes.indexOf(note),note);
 
-        model.addAttribute("notes", notes.getContent());
-        model.addAttribute("username",person.getUsername());
+            }
+
+        }
+        model.addAttribute("notes", notes);
+        model.addAttribute("person",person);
         return "main";
     }
 

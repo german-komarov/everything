@@ -22,12 +22,12 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li class="active"><a href="/main">Home</a></li>
-                    <li><a href="/createNote">Create Post</a></li>
+                    <li><a href="/note/createNote">Create Post</a></li>
 
                 </ul>
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${username}"><b class="caret"></b></a>
+                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${person.username}"><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="/profile">Profile</a></li>
                             <li><a href="#">Something else here</a></li>
@@ -47,7 +47,7 @@
 
 <div class="row">
     <div th:each="note : ${notes}" class="main">
-        <h2 th:text="${note.author}"></h2>
+        <a style="color: #333333" th:href="@{'/channel/'+${note.authorId}}"><h2 th:text="${note.author}"></h2></a>
         <h5 th:text="${note.creationDate}"></h5>
         <div align="center">
             <pre th:text="${note.content}"></pre>
@@ -68,6 +68,9 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
+            <div th:text="${note.likes.size()}" style="display: inline"> </div>
+            <div th:unless="${note.likedByThisUser}" style="display: inline"><a th:href="@{'/note/likeNote/'+${note.id}}">Like</a> </div>
+            <div th:if="${note.likedByThisUser}" style="display: inline"><a th:href="@{'/note/unlikeNote/'+${note.id}}">Unlike</a> </div>
         </div>
         <br>
     </div>

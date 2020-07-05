@@ -29,7 +29,7 @@ public class ChannelController {
     {
         Person person=personService.getUserById(principal.getId());
         Person channel=personService.getUserById(id);
-        List<Note> noteList=noteService.getAllNotesOfThisUser(personService.getUserById(id));
+        List<Note> notes=noteService.getAllNotesOfThisUser(id);
         if(person.getSubscriptions().contains(channel)) {
             model.addAttribute("isSubscribed", "True");
         }
@@ -38,8 +38,9 @@ public class ChannelController {
             model.addAttribute("isSubscribed", "False");
         }
         model.addAttribute("channel",channel);
-        model.addAttribute("numberOfNotes",noteList.size());
+        model.addAttribute("numberOfNotes",notes.size());
         model.addAttribute("username",person.getUsername());
+        model.addAttribute("notes",notes);
         return "channel";
     }
 
