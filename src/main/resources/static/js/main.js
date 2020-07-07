@@ -1,0 +1,2 @@
+var servResponse= document.querySelector
+

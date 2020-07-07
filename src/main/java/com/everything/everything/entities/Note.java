@@ -51,6 +51,14 @@ public class Note {
     private Set<Person> likes=new HashSet<>();
 
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="note_id")
+    private Set<Comment> comments=new HashSet<>();
+
+
+
+
+
 
 
 

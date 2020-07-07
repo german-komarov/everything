@@ -68,6 +68,15 @@ public class Person  implements UserDetails {
     private Set<Person> subscriptions=new HashSet<>();
 
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="user_contacts",
+            joinColumns = {@JoinColumn(name="first_id")},
+            inverseJoinColumns = {@JoinColumn(name="second_id")}
+    )
+    private Set<Person> contacts=new HashSet<>();
+
+
     @Override
     public String getUsername() {
         return username;

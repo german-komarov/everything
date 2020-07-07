@@ -194,4 +194,26 @@ public class PersonService implements UserDetailsService {
         this.saveUser(channel);
         return true;
     }
+
+
+    public void addContact(Person firstPerson,Person secondPerson)
+    {
+
+        //Get current contacts of two people
+        Set<Person> contactsOfFirstPerson=firstPerson.getContacts();
+        Set<Person> contactsOfSecondPerson=secondPerson.getContacts();
+
+        //Adding people to each other's contacts
+        contactsOfFirstPerson.add(secondPerson);
+        contactsOfSecondPerson.add(firstPerson);
+
+        //Setting contacts to corresponding users
+        firstPerson.setContacts(contactsOfFirstPerson);
+        secondPerson.setContacts(contactsOfSecondPerson);
+
+        //Saving users
+        this.saveUser(firstPerson);
+        this.saveUser(secondPerson);
+    }
+
 }

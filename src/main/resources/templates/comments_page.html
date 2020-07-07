@@ -27,7 +27,7 @@
                 </ul>
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${person.username}"><b class="caret"></b></a>
+                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${author.username}"><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="/profile">Profile</a></li>
                             <li><a href="#">Something else here</a></li>
@@ -44,34 +44,22 @@
     </div>
 </div>
 
+<div align="center">
+    <form method="post" th:action="@{'/main/comments/'+${noteId}+'/leaveComment'}">
+        <label>
+            <textarea name="text" placeholder="Leave your comment"></textarea>
+        </label>
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+<br>
 
 <div class="row">
-    <div th:each="note : ${notes}" class="main">
-        <a style="color: #333333" th:href="@{'/channel/'+${note.authorId}}"><h2 th:text="${note.author}"></h2></a>
-        <h5 th:text="${note.creationDate}"></h5>
+    <div th:each="comment : ${comments}" class="main">
+        <a style="color: #333333" th:href="@{'/channel/'+${comment.author.id}}"><h4 th:text="${comment.author.username}"></h4></a>
+        <h5 th:text="${comment.publishDate}"></h5>
         <div align="center">
-            <pre th:text="${note.content}"></pre>
-            <br>
-            <div th:if="${note.attachmentType=='image'}">
-                <img  th:src="@{'data:image/jpeg;base64,'+${note.attachment}}" width="500" height="600" alt="image"/>
-            </div>
-            <div th:if="${note.attachmentType=='audio'}">
-                <audio controls>
-
-                    <source th:src="@{'data:audio/mpeg;base64,'+${note.attachment}}" type="audio/mpeg">
-                    Your browser does not support the audio tag.
-                </audio>
-            </div>
-            <div th:if="${note.attachmentType=='video'}">
-                <video width="640" height="360" controls>
-                    <source th:src="@{'data:video/mp4;base64,'+${note.attachment}}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <div th:text="${note.likes.size()}" style="display: inline"> </div>
-            <div th:unless="${note.likedByThisUser}" style="display: inline"><a th:href="@{'/note/likeNote/'+${note.id}}">Like</a> </div>
-            <div th:if="${note.likedByThisUser}" style="display: inline"><a th:href="@{'/note/unlikeNote/'+${note.id}}">Unlike</a> </div>
-            <div style="display: inline"><a th:href="@{'/main/comments/'+${note.id}}"><i>Comments <span th:text="${note.comments.size()}"></span></i></a> </div>
+            <pre th:text="${comment.text}"></pre>
         </div>
         <br>
     </div>
