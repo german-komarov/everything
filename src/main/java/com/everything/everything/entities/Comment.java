@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(of={"id"})
 @ToString(of={"id","author","text"})
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
