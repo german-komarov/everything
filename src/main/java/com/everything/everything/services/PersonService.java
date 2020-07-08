@@ -147,6 +147,16 @@ public class PersonService implements UserDetailsService {
 
         if(personRepository.findByUsername(person.getUsername())!=null)
         {
+            if(person.getIsActivated()==0)
+            {
+                person.setActivationCode(UUID.randomUUID().toString());
+                this.saveUser(person);
+                String message= String.format("Hello %s.\n\nWelcome to StudentZ. " +
+                                "Go to this reference to activate your account https://everything-for-you.herokuapp.com/registration/activate/%s\n\nIf you didn't try to register, please just ignore this message",
+                        person.getUsername(),person.getActivationCode());
+                mailSender.send(person.getEmail(),"Registration",message);
+                return "OK";
+            }
             return "Username is taken";
         }
 
