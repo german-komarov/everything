@@ -151,9 +151,14 @@ public class PersonService implements UserDetailsService {
             return "Passwords are not equal";
         }
 
-        if(personRepository.findByUsername(person.getUsername())!=null)
+        if(this.getUserByUsername(person.getUsername())!=null)
         {
             return "Username is taken";
+        }
+
+        if(this.getUserByEmail(person.getEmail())!=null)
+        {
+            return "Email is taken";
         }
 
         person.setStatus("");
