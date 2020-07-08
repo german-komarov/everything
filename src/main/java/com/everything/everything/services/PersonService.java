@@ -5,6 +5,7 @@ import com.everything.everything.entities.Role;
 import com.everything.everything.repositories.PersonRepository;
 import com.everything.everything.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -49,9 +47,10 @@ public class PersonService implements UserDetailsService {
         {
             throw new UsernameNotFoundException("User not found");
         }
+
         if(person.getIsActivated()!=1)
         {
-            throw new UsernameNotFoundException("User is not activated");
+            throw new UsernameNotFoundException("User not activated");
         }
 
         return person;
@@ -154,16 +153,6 @@ public class PersonService implements UserDetailsService {
 
         if(personRepository.findByUsername(person.getUsername())!=null)
         {
-            if(person.getIsActivated()==0)
-            {
-                person.setActivationCode(UUID.randomUUID().toString());
-                this.saveUser(person);
-                String message= String.format("Hello %s.\n\nWelcome to StudentZ. " +
-                                "Go to this reference to activate your account https://everything-for-you.herokuapp.com/registration/activate/%s\n\nIf you didn't try to register, please just ignore this message",
-                        person.getUsername(),person.getActivationCode());
-                mailSender.send(person.getEmail(),"Registration",message);
-                return "OK";
-            }
             return "Username is taken";
         }
 
@@ -251,6 +240,27 @@ public class PersonService implements UserDetailsService {
         //Saving users
         this.saveUser(firstPerson);
         this.saveUser(secondPerson);
+    }
+
+
+
+    public boolean sendMailAgain(String mail)
+    {
+        Person person=this.getUserByEmail(mail);
+        if(person.getIsActivated()==0)
+        {
+            person.setActivationCode(UUID.randomUUID().toString());
+            this.saveUser(person);
+            String message= String.format("Hello %s.\n\nWelcome to StudentZ. " +
+                            "Go to this reference to activate your account https://everything-for-you.herokuapp.com/registration/activate/%s\n\nIf you didn't try to register, please just ignore this message",
+                    person.getUsername(),person.getActivationCode());
+            mailSender.send(person.getEmail(),"Registration",message);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
