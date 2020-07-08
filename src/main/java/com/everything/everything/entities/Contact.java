@@ -12,15 +12,20 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(of={"id","from","to"})
 @ToString(of = {"id","from","to","time"})
-public class ContactRequest {
+public class Contact {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String from;
-    private String to;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="outgoing_id")
+    private Person from;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="incoming_id")
+    private Person to;
 
     private Date time;
 

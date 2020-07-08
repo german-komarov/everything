@@ -15,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(of = {"id"})
 @ToString(of = {"id","username","email","firstName","lastName"})
-@Table(name = "person")
 public class Person  implements UserDetails {
 
     @Id
@@ -75,6 +74,16 @@ public class Person  implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name="second_id")}
     )
     private Set<Person> contacts=new HashSet<>();
+
+
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="outgoing_id")
+    private Set<Contact> from =new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="incoming_id")
+    private Set<Contact> to =new HashSet<>();
 
 
     @Override

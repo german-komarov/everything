@@ -1,8 +1,10 @@
 package com.everything.everything.controllers;
 
 
+import com.everything.everything.entities.Contact;
 import com.everything.everything.entities.Note;
 import com.everything.everything.entities.Person;
+import com.everything.everything.services.ContactService;
 import com.everything.everything.services.NoteService;
 import com.everything.everything.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class ProfileController {
     private PersonService personService;
     @Autowired
     private NoteService noteService;
+    @Autowired
+    private ContactService ContactService;
 
 
     @GetMapping
@@ -37,6 +41,7 @@ public class ProfileController {
         model.addAttribute("notes",notes);
         return "my_profile";
     }
+
 
 
 

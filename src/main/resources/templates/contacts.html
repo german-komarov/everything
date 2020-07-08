@@ -21,14 +21,14 @@
             <div class="brand">Everything</div>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="/main">Home</a></li>
+                    <li><a href="/main">Home</a></li>
                     <li><a href="/note/createNote">Create Post</a></li>
-                    <li><a href="/contacts">Contacts</a></li>
+                    <li class="active"><a href="/contacts">Contacts</a></li>
 
                 </ul>
                 <ul class="nav pull-right">
                     <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${author.username}"><b class="caret"></b></a>
+                        <a data-toggle="dropdown" class="dropdown-toggle"  th:text="${person.username}"><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="/profile">Profile</a></li>
                             <li><a href="#">Something else here</a></li>
@@ -45,26 +45,24 @@
     </div>
 </div>
 
-<div align="center">
-    <form method="post" th:action="@{'/main/comments/'+${noteId}+'/leaveComment'}">
-        <label>
-            <textarea name="text" placeholder="Leave your comment"></textarea>
-        </label>
-        <input type="submit" value="Submit"/>
-    </form>
-</div>
-<br>
 
-<div class="row">
-    <div th:each="comment : ${comments}" class="main">
-        <a style="color: #333333" th:href="@{'/channel/'+${comment.author.id}}"><h4 th:text="${comment.author.username}"></h4></a>
-        <h5 th:text="${comment.publishDate}"></h5>
-        <div align="center">
-            <pre th:text="${comment.text}"></pre>
-        </div>
-        <br>
+
+<h3>Contact requests</h3>
+<div th:each="contactRequest :${contactRequests}">
+    <div >
+        <a style="color: #333333" th:href="@{'/channel/'+${contactRequest.from.id}}"> <h5 th:text="${contactRequest.from.username}"></h5></a>
     </div>
 </div>
+<hr>
+<h3>Contacts</h3>
+<div th:each="contact :${contacts}">
+    <div >
+        <a style="color: #333333" th:href="@{'/channel/'+${contact.id}}"> <h5 th:text="${contact.username}"></h5></a>
+    </div>
+</div>
+
+
+
 
 </body>
 </html>

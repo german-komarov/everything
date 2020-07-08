@@ -44,7 +44,6 @@ public class MainController {
             }
 
         }
-        System.out.println(notes.get(0).getId() +"  "+notes.get(0).getComments().size());
         model.addAttribute("notes", notes);
         model.addAttribute("person",person);
         return "main";

@@ -5,7 +5,6 @@ import com.everything.everything.entities.Note;
 import com.everything.everything.entities.Person;
 import com.everything.everything.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

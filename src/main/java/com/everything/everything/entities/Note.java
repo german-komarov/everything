@@ -52,8 +52,10 @@ public class Note {
 
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="note_id")
+    @JoinColumn(name = "note_id")
     private Set<Comment> comments=new HashSet<>();
+
+
 
 
 
