@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -45,6 +48,10 @@ public class PersonService implements UserDetailsService {
         if(person==null)
         {
             throw new UsernameNotFoundException("User not found");
+        }
+        if(person.getIsActivated()!=1)
+        {
+            throw new UsernameNotFoundException("User is not activated");
         }
 
         return person;
